@@ -1,0 +1,22 @@
+{ "columns":17,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"tileset.json"
+        }
+    },
+ "image":"./assets/bh-tiles.png",
+ "imageheight":144,
+ "imagewidth":272,
+ "margin":0,
+ "name":"tileset",
+ "spacing":0,
+ "tilecount":153,
+ "tiledversion":"1.3.1",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":1.2
+}
