@@ -1,47 +1,82 @@
-function parse_json_file(path)
-{
-	var request = new XMLHttpRequest();
-	request.open("GET", path, false);
-	request.overrideMimeType("application/json");
-	request.send(null);
-	var jsonData = JSON.parse(request.responseText);
-	return jsonData;
+function mirrorXY(grid){
+    var out = [];
+
+    for(var x = 0; x < grid[0].length; x++)
+    {   var arr = []
+        for(var y = 0; y < grid.length; y++)
+        {
+            arr.push(grid[y][x]);
+        }
+        out.push(arr);
+    }
+    return (out);
+}
+function initGraph(arr, ncols, walkable){
+    console.log(arr);
+    var tmp = [];
+    for(var i = 0; i < arr.length; i++)
+    {
+        if (walkable.indexOf(arr[i] - 1) > -1)
+           tmp.push(1);
+           //arr[i] = 1;
+        else
+           tmp.push(0);
+           //arr[i] = 0;
+    }
+    var nLines = arr.length / ncols;
+    var g = [];
+    for(var i = 0; i < nLines; i++)
+    {
+        var ar = tmp.slice(i * ncols, i * ncols + ncols);
+        g.push(ar);
+    }
+    return (mirrorXY(g));
 }
 
 class Level
 {
-	constructor(tileset_path,map_path)
-	{
-		this.tileset_data = parse_json_file(tileset_path);
-		//console.log(this.tileset_data);
-		this.map_data = parse_json_file(map_path);
-		console.log(this.map_data);
-		this.map_size = createVector(this.map_data.width, this.map_data.height); // n_tiles
-		//console.log(this.map_size);
-		this.map_tiles = this.map_data.layers[0].data;
-		this.tileset_image = loadImage(this.tileset_data.image);
-		this.tile_size = createVector(this.map_data.tilewidth, this.map_data.tileheight);//size of each tile
-		//console.log(this.map_tiles);
-		//console.log(this.tile_size);
-	}
+    constructor(mapPath, tilesetPath, tilesize, walkable)
+    {
+        this.tileset = new Tileset(tilesetPath);
+        this.tilesize = tilesize;
+        this.data = parseJsonFile(mapPath);
+        this.map = this.data.layers[0];
+        this.graph = new Graph(initGraph(this.map.data, this.map.width, walkable));
+    }
+    
+    mapSize() //width and height of map (number of tiles)
+    {
+        return (createVector(this.map.width,this.map.height));
+    }
 
-	render()
-	{
-		var dw = width / this.map_size.x;
-		var dh = height / this.map_size.y;
-		console.log("dw/dh = " + dw + " " + dh);
-		for (var i = 0; i < this.map_tiles.length; i++)
+    mapTiles() //array of tiles numbers
+    {
+        return (this.map.data);
+    }
+
+    render()
+    {
+        var mapSize = this.mapSize();
+        var ncols = this.tileset.nColumns();
+        var stilesize = this.tileset.sTilesize;
+        var dw = width / mapSize.x;
+        var dh = height / mapSize.y;
+        var img = this.tileset.getImage();
+        var mapTiles = this.mapTiles();
+
+		for (var i = 0; i < mapTiles.length; i++)
 		{
 			var sx,sy,dx,dy;
-			dx = (i % this.map_size.x) * dw;
-			dy = floor(i / this.map_size.x) * dh;
-			console.log("dx/dy = " + dx + " " + dy);
-			sx = ((this.map_tiles[i] - 1) % this.tileset_data.columns) * this.tile_size.x;
-			sy = floor((this.map_tiles[i] - 1) / this.tileset_data.columns) * this.tile_size.y;
-			console.log("sx/sy = " + sx + " " + sy);
-
-
-			image(this.tileset_image, dx,dy, dw,dh, sx,sy, this.tile_size.x, this.tile_size.y);
+			dx = (i % mapSize.x) * dw;
+			dy = floor(i / mapSize.x) * dh;
+			sx = ((mapTiles[i] - 1) % ncols) * stilesize.x;
+            sy = floor((mapTiles[i] - 1) / ncols) * stilesize.y;
+            noSmooth();
+			image(img, dx,dy, dw,dh, sx,sy, stilesize.x, stilesize.y);
 		}
-	}
+    }
+    findPath(start, end)
+    {
+        return (astar.search(this.graph,this.graph.grid[start.x][start.y], this.graph.grid[end.x][end.y]))
+    }
 }
