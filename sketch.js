@@ -1,4 +1,5 @@
 let tileset;
+let spritesheet;
 let level;
 let player;
 let walkable = 
@@ -16,27 +17,31 @@ function preload()
 function setup()
 {
   level = new Level('assets/new_mapl.json', 'assets/tileset.json', tilesize, walkable);
-  player = new Player(2,8,tilesize);
+  player = new Player(2,8,'assets/spritesheet.json',tilesize);
   
   createCanvas(tilesize * level.mapSize().x, tilesize * level.mapSize().y);
 }
 
 function draw()
 {
-    frameRate(5);
+    frameRate(32);
     background(20);
     level.render();
     player.render();
+
     //noLoop();
 }
+
 function mousePressed()
 {
     var tilepos = createVector( floor(mouseX / width * level.mapSize().x),
                                 floor(mouseY / height * level.mapSize().y));
-    console.log(tilepos.x, tilepos.y)
+
+    //console.log(tilepos.x, tilepos.y)
 
     var path = level.findPath(player.pos,tilepos);
     player.path = path;
-  console.log(path);
-  console.log();
+    //console.log(path);
+  //console.log();
+
 }

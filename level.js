@@ -21,13 +21,13 @@ function initGraph(arr, ncols, walkable){
            //arr[i] = 1;
         else
            tmp.push(0);
-           //arr[i] = 0;
+           //arr[i] = 0; useful for debugging
     }
     var nLines = arr.length / ncols;
     var g = [];
     for(var i = 0; i < nLines; i++)
     {
-        var ar = tmp.slice(i * ncols, i * ncols + ncols);
+        var ar = tmp.slice(i * ncols, i * ncols + ncols); //arr instead of tmp for debugging
         g.push(ar);
     }
     return (mirrorXY(g));
@@ -77,6 +77,9 @@ class Level
     }
     findPath(start, end)
     {
-        return (astar.search(this.graph,this.graph.grid[start.x][start.y], this.graph.grid[end.x][end.y]))
+        var s = start.copy();
+        s.x = Number(s.x.toFixed(0));
+        s.y = Number(s.y.toFixed(0));
+        return (astar.search(this.graph,this.graph.grid[s.x][s.y], this.graph.grid[end.x][end.y]))
     }
 }
