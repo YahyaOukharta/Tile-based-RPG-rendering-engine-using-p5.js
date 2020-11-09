@@ -18,3 +18,4 @@ Try it out on this link [https://yahyaoukharta.github.io/Tile-based-RPG-renderin
    - Player from [BlowHard](https://github.com/YahyaOukharta/BlowHard)
    - Walks towards mouse on click
    - Gets path using [A* Pathfinding](https://github.com/bgrins/javascript-astar) algorithm
+   - Assets from [here](https://opengameart.org/content/blowhard-2-blow-harder) 
