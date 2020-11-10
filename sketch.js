@@ -1,3 +1,4 @@
+let camera;
 let tileset;
 let spritesheet;
 let level;
@@ -17,27 +18,39 @@ function preload()
 function setup()
 {
   level = new Level('assets/new_mapl.json', 'assets/tileset.json', tilesize, walkable);
-  player = new Player(2,8,'assets/spritesheet.json',tilesize);
-  
+  player = new Player(6,8,'assets/spritesheet.json',tilesize);
+  camera = new Camera(player.pos);
+
   createCanvas(tilesize * level.mapSize().x, tilesize * level.mapSize().y);
 }
+
+let s;
 
 function draw()
 {
     frameRate(32);
     background(20);
+
+    push();
+    //scale(2);
+    //camera.follow(player)
+    //scale
     level.render();
     player.render();
 
+    pop();
     //noLoop();
 }
 
 function mousePressed()
 {
-    var tilepos = createVector( floor(mouseX / width * level.mapSize().x),
-                                floor(mouseY / height * level.mapSize().y));
-
-    //console.log(tilepos.x, tilepos.y)
+     var tilepos = createVector( floor(mouseX / (width) * level.mapSize().x),
+                                 floor(mouseY / (height) * level.mapSize().y));
+    //var tilepos = createVector( floor((mouseX - camera.getOffset().x)*2 / width * level.mapSize().x),
+    //                            floor((mouseY - camera.getOffset().y)*2 / height * level.mapSize().y));
+    console.log(mouseX,mouseY);
+    console.log(tilepos.x, tilepos.y);
+    console.log(tilepos.x, tilepos.y);
 
     var path = level.findPath(player.pos,tilepos);
     player.path = path;
